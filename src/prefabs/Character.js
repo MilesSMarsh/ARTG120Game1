@@ -1,51 +1,67 @@
-class Character extends Phaser.GameObjects.Sprite{
-    constructor(scene, x, y, texture, frame){
+class Character extends Phaser.Physics.Arcade.Sprite{
+    constructor(scene, x, y, texture, frame, direction){
         super(scene, x, y, texture, frame);
 
         scene.add.existing(this);
-        this.moveSpeed = 5;
-        this.mrLeft = true;
-        this.mrRight = true;
-        this.mrUp = true;
-        this.mrDown = true;
+        scene.physics.add.existing(this);
+
+        this.body.setCollideWorldBounds(true);
+        this.direction = direction;
+        this.charVelocity = 100;
 
     }
+    
+}
 
-    update(){
+    //vvvvvv character states vvvvvv
+class IdleState extends State{
+    enter(scene, character){
+        character.setVelocity(0);
 
-        //movement restrictions------------------------
+    }
+    execute(scene, character){
+        const {left, right, up , down, space, shift} = scene.keys;
 
-        //game borders
-        if(this.x <= borderPadding + this.width){
-            this.mrLeft = false;
-        }else{this.mrLeft = true;}
-        if(this.x >= game.config.width - borderUISize){
-            this.mrRight = false;
-        }else{this.mrRight = true;}
-        if(this.y <=  borderPadding){
-            this.mrUp = false;
-        }else{this.mrUp = true;}
-        if(this.y >= game.config.height - borderPadding){
-            this.mrDown = false;
-        }else{this.mrDown = true;}
-
-        //movement restrictions------------------------
-
-        //movement
-        if(keyLEFT.isDown && this.mrLeft) {
-            this.x -= this.moveSpeed;
+        if(left.isDown || right.isDown || up.isDown || down.isDown ){
+            this.stateMachine.transition('move');
+            return;
         }
-        if(keyRIGHT.isDown && this.mrRight){
-            this.x += this.moveSpeed;
-        }
-        if(keyUP.isDown && this.mrUp){
-            this.y -= this.moveSpeed;
-        }
-        if(keyDOWN.isDown && this.mrDown){
-            this.y += this.moveSpeed;
-        }
-
-        
     }
 
 }
+
+class MoveState extends State{
+    execute(scene, character){
+        const { left, right, up, down, space, shift } = scene.keys;
+        const HKey = scene.keys.HKey;
+
+        // transition to idle if not pressing movement keys
+        if(!(left.isDown || right.isDown || up.isDown || down.isDown)) {
+            this.stateMachine.transition('idle');
+            return;
+        }
+
+        // handle movement
+        let moveDirection = new Phaser.Math.Vector2(0, 0);
+        if(up.isDown) {
+            moveDirection.y = -1;
+            character.direction = 'up';
+        } else if(down.isDown) {
+            moveDirection.y = 1;
+            character.direction = 'down';
+        }
+        if(left.isDown) {
+            moveDirection.x = -1;
+            character.direction = 'left';
+        } else if(right.isDown) {
+            moveDirection.x = 1;
+            character.direction = 'right';
+        }
+        // normalize movement vector, update character position, and play proper animation
+        moveDirection.normalize();
+        character.setVelocity(character.charVelocity * moveDirection.x, character.charVelocity * moveDirection.y);
+        
+    }
+}
+
+    //^^^^^^ character states ^^^^^^
