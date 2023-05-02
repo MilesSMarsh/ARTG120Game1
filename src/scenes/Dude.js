@@ -9,6 +9,7 @@ class Dude extends Phaser.Scene{
         this.load.image('dummy', './assets/Training_Dummy.png');
         this.load.image('ui', './assets/ui.png');
         this.load.image('heart', './assets/heart.png'); 
+        this.load.image('line', './assets/line.png'); 
         
         //load walking spritesheets
         this.load.spritesheet('walk_right', './assets/spritesheets/Move_Right.png',{
@@ -83,6 +84,7 @@ class Dude extends Phaser.Scene{
         //this.ui = this.physics.add.staticGroup();
         this.fridge = this.physics.add.staticGroup();
         this.dummy = this.physics.add.staticGroup();
+        this.line = this.physics.add.staticGroup();
 
         //this.heart0 = this.add.tileSprite(50,55,30,30, 'heart');
         //this.add.image(100,200, 'heart');
@@ -95,6 +97,7 @@ class Dude extends Phaser.Scene{
         this.fridge.create(400, 568, 'fridge').setScale(2).refreshBody();
         //this.fridge = this.physics.add.sprite(400, 568, 'fridge');
         this.dummy.create(150, 300, 'dummy');
+        this.line.create(350, 50, 'line').setOrigin(0.5);
         //this.ui.create(0,0, 'ui').setOrigin(0);
 
         //this.physics.add.collider(this.p1Character, this.fridge);
@@ -118,6 +121,7 @@ class Dude extends Phaser.Scene{
         this.physics.add.overlap(this.p1Character, this.fridge, this.whatup, null, this);
         this.physics.add.collider(this.p1Character, this.dummy);
         this.physics.add.overlap(this.p1Character, this.dummy, this.bounce, null, this);
+        this.physics.add.collider(this.p1Character, this.line);
 
         keyENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
 

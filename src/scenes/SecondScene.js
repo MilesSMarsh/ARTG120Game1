@@ -13,6 +13,7 @@ class SecondScene extends Phaser.Scene{
         this.load.image('cabbage', './assets/Cabbage.png');
         this.load.image('aisle', './assets/aisle.png');
         this.load.image('cash_register', './assets/cash_register.png');
+        this.load.image('line', './assets/line.png');
 
         /*
         //load walking spritesheets
@@ -90,9 +91,11 @@ class SecondScene extends Phaser.Scene{
         this.platforms = this.physics.add.staticGroup();
         //this.ui = this.physics.add.staticGroup();
         this.door = this.physics.add.staticGroup();
+        this.line = this.physics.add.staticGroup();
 
         //this.ui.create(0,0, 'ui').setOrigin(0);
-        this.door.create(100,100, 'door').setScale(2).refreshBody();;
+        this.door.create(100,100, 'door').setScale(2).refreshBody();
+        this.line.create(350, 50, 'line').setOrigin(0.5);
 
         //  Here we create the ground.
         //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
@@ -126,6 +129,7 @@ class SecondScene extends Phaser.Scene{
                 //this.obsticle = new Object(this, game.config.width/2, game.config.height, 'wall').setOrigin(0.5, 0);  
         //this.p2Character = new Character(this, game.config.width/2, game.config.height+ 50, 'rocket').setOrigin(0.5, 0); 
         this.physics.add.collider(this.p1Character, this.platforms);  
+        this.physics.add.collider(this.p1Character, this.line);
         
         this.physics.add.overlap(this.p1Character, this.door, this.whatup, null, this);
 
