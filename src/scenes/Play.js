@@ -98,6 +98,7 @@ class Play extends Phaser.Scene{
         //create hitbox for attack
         this.cartHitBox = this.add.rectangle(game.config.width, game.config.height ,35, 35, 0xffffff, 0.5);
         this.physics.add.existing(this.cartHitBox);
+        this.physics.world.remove(this.cartHitBox.body);
 
 
 

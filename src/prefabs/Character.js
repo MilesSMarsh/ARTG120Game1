@@ -11,7 +11,6 @@ class Character extends Phaser.Physics.Arcade.Sprite{
         this.collided = false;
         this.cartHitBox = hitbox;
         this.currHealth = health;
-        this.attacking = true;
 
 
     }
@@ -154,9 +153,12 @@ class AttackState extends State{
     enter(scene, character) {
         console.log('attacking');
         character.setVelocity(0);
+        this.physics.world.add(this.cartHitBox.body);
         character.anims.play(`attack-${character.direction}`);
         character.once('animationcomplete', () => {
             this.stateMachine.transition('idle');
+            this.physics.world.remove(this.cartHitBox.body);
+            return;
         });
     }
 }
