@@ -7,7 +7,7 @@ class Character extends Phaser.Physics.Arcade.Sprite{
 
         this.body.setCollideWorldBounds(true);
         this.direction = direction;
-        this.charVelocity = 100;
+        this.charVelocity = 200;
 
     }
     
@@ -33,7 +33,6 @@ class IdleState extends State{
 class MoveState extends State{
     execute(scene, character){
         const { left, right, up, down, space, shift } = scene.keys;
-        const HKey = scene.keys.HKey;
 
         // transition to idle if not pressing movement keys
         if(!(left.isDown || right.isDown || up.isDown || down.isDown)) {
@@ -60,7 +59,7 @@ class MoveState extends State{
         // normalize movement vector, update character position, and play proper animation
         moveDirection.normalize();
         character.setVelocity(character.charVelocity * moveDirection.x, character.charVelocity * moveDirection.y);
-        
+        character.anims.play(`${character.direction}`, true);
     }
 }
 

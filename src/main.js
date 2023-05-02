@@ -10,5 +10,3 @@ let config = {
 }
 
 const game = new Phaser.Game(config);
-
-let keyF, keyR, keyLEFT, keyRIGHT, keyUP, keyDOWN;
