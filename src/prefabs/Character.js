@@ -1,5 +1,5 @@
 class Character extends Phaser.Physics.Arcade.Sprite{
-    constructor(scene, x, y, texture, frame, direction){
+    constructor(scene, x, y, texture, frame, direction, hitbox){
         super(scene, x, y, texture, frame);
 
         scene.add.existing(this);
@@ -9,11 +9,30 @@ class Character extends Phaser.Physics.Arcade.Sprite{
         this.direction = direction;
         this.charVelocity = 200;
         this.collided = false;
+        this.cartHitBox = hitbox;
 
     }
 
     moveHitBox(){
         //moves hitbox
+        switch(this.direction) {
+            case 'up':
+                this.cartHitBox.x = this.x;
+                this.cartHitBox.y = this.y+10;
+                break;
+            case 'down':
+                this.cartHitBox.x = this.x;
+                this.cartHitBox.y = this.y+100;
+                break;
+            case 'left':
+                this.cartHitBox.x = this.x-40;
+                this.cartHitBox.y = this.y+50;
+                break;
+            case 'right':
+                this.cartHitBox.x = this.x+40;
+                this.cartHitBox.y = this.y+50;
+                break;
+        }
     }
     
 }
