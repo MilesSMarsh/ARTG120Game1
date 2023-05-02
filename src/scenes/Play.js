@@ -5,6 +5,11 @@ class Play extends Phaser.Scene{
     preload(){
 
 
+        //sean's loads
+        this.load.image('rocket', './assets/rocket.png');
+        this.load.image('ui', './assets/ui.png');
+
+        /*
         //load walking spritesheets
         this.load.spritesheet('walk_right', './assets/spritesheets/Move_Right.png',{
             frameWidth: 100,
@@ -47,7 +52,7 @@ class Play extends Phaser.Scene{
 
 
 
-
+*/
         this.load.spritesheet('boss', './assets/Boss.png',{
             frameWidth: 64,
             frameHeight: 64
@@ -75,6 +80,13 @@ class Play extends Phaser.Scene{
         //set background color
         this.cameras.main.setBackgroundColor('#dfff00');
 
+        //sean's stuff
+        this.add.image(0,0, 'ui').setOrigin(0);
+        this.heart1 = this.add.tileSprite(50,30,30,30, 'heart');
+        this.heart2 = this.add.tileSprite(80,30,30,30, 'heart');
+        this.heart3 = this.add.tileSprite(110,30,30,30, 'heart');
+        this.heart4 = this.add.tileSprite(140,30,30,30, 'heart');
+        this.heart5 = this.add.tileSprite(170,30,30,30, 'heart');
 
 
 
@@ -113,7 +125,7 @@ class Play extends Phaser.Scene{
 
 
 
-
+/*
         //animation creation for character walk
         this.anims.create({
             key: 'walk-up',
@@ -166,7 +178,7 @@ class Play extends Phaser.Scene{
             frameRate: 8,
             frames: this.anims.generateFrameNumbers('attack_right', {start: 0, end: 3})
         });
-
+*/
 
 
 
@@ -196,12 +208,18 @@ class Play extends Phaser.Scene{
             character.collided = true;
         });
 
+        //sean add
+        keyENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
 
     }
     
     update(){
         this.characterFSM.step();
         this.bossFSM.step();
+
+        if (Phaser.Input.Keyboard.JustDown(keyENTER)) {
+            this.scene.start('goodEndingScene');
+        }
 
     }
 
