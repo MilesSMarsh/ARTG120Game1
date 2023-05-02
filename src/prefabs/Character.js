@@ -11,6 +11,10 @@ class Character extends Phaser.Physics.Arcade.Sprite{
         this.collided = false;
 
     }
+
+    moveHitBox(){
+        //moves hitbox
+    }
     
 }
 
