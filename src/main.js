@@ -4,7 +4,10 @@ let config = {
     height: 700,
     pixelArt: true,
     physics:{
-        default: "arcade"
+        default: "arcade",
+        arcade : {
+            //debug: true
+        }
     },
     scene: [ Play ]
 }

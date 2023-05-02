@@ -8,6 +8,7 @@ class Character extends Phaser.Physics.Arcade.Sprite{
         this.body.setCollideWorldBounds(true);
         this.direction = direction;
         this.charVelocity = 200;
+        this.collided = false;
 
     }
     
@@ -17,12 +18,14 @@ class Character extends Phaser.Physics.Arcade.Sprite{
 class IdleState extends State{
     enter(scene, character){
         character.setVelocity(0);
+        character.anims.play(`walk-${character.direction}`, true);
+        character.anims.stop();
 
     }
     execute(scene, character){
         const {left, right, up , down, space, shift} = scene.keys;
 
-        if(space.isDown){
+        if(character.collided){
             this.stateMachine.transition('damaged');
             return;
         }
@@ -30,6 +33,7 @@ class IdleState extends State{
             this.stateMachine.transition('move');
             return;
         }
+
         
     }
 
@@ -38,7 +42,11 @@ class IdleState extends State{
 class MoveState extends State{
     execute(scene, character){
         const { left, right, up, down, space, shift } = scene.keys;
-
+        //if run into boss
+        if(character.collided){
+            this.stateMachine.transition('damaged');
+            return;
+        }
         // transition to idle if not pressing movement keys
         if(!(left.isDown || right.isDown || up.isDown || down.isDown)) {
             this.stateMachine.transition('idle');
@@ -64,7 +72,7 @@ class MoveState extends State{
         // normalize movement vector, update character position, and play proper animation
         moveDirection.normalize();
         character.setVelocity(character.charVelocity * moveDirection.x, character.charVelocity * moveDirection.y);
-        character.anims.play(`${character.direction}`, true);
+        character.anims.play(`walk-${character.direction}`, true);
     }
 }
 
@@ -72,7 +80,7 @@ class DamagedState extends State{
     enter(scene, character){
         console.log('oof');
         character.setTint('0xFF0000');
-        character.anims.play(`${character.direction}`);
+        character.anims.play(`walk-${character.direction}`);
         character.anims.stop();
 
         switch(character.direction) {
@@ -93,6 +101,8 @@ class DamagedState extends State{
         scene.time.delayedCall(300, () => {
             character.clearTint();
             this.stateMachine.transition('idle');
+            character.collided = false;
+            return;
         });
     }
 }

@@ -3,17 +3,69 @@ class Play extends Phaser.Scene{
         super("playScene");
     }
     preload(){
-        //load sprites
-        this.load.spritesheet('arrows', './assets/arrows.png',{
-            frameWidth: 16,
-            frameHeight: 16
+
+
+        //load walking spritesheets
+        this.load.spritesheet('walk_right', './assets/spritesheets/Move_Right.png',{
+            frameWidth: 100,
+            frameHeight: 100
         });
+        this.load.spritesheet('walk_left', './assets/spritesheets/Move_Left.png',{
+            frameWidth: 100,
+            frameHeight: 100
+        });
+        this.load.spritesheet('walk_up', './assets/spritesheets/Move_Up.png',{
+            frameWidth: 100,
+            frameHeight: 100
+        });
+        this.load.spritesheet('walk_down', './assets/spritesheets/Move_Down.png',{
+            frameWidth: 100,
+            frameHeight: 100
+        });
+
+
+
+
+        //load attack sprite sheets
+        this.load.spritesheet('attack_right', './assets/spritesheets/Attack_Right.png',{
+            frameWidth: 100,
+            frameHeight: 100
+        });
+        this.load.spritesheet('attack_left', './assets/spritesheets/Attack_Left.png',{
+            frameWidth: 100,
+            frameHeight: 100
+        });
+        this.load.spritesheet('attack_down', './assets/spritesheets/Attack_Down.png',{
+            frameWidth: 100,
+            frameHeight: 100
+        });
+        this.load.spritesheet('attack_up', './assets/spritesheets/Attack_Up.png',{
+            frameWidth: 100,
+            frameHeight: 100
+        });
+
+
+
+
+
         this.load.spritesheet('boss', './assets/Boss.png',{
             frameWidth: 64,
             frameHeight: 64
         });
+
+
     }
+
+
+
+
+
     create(){
+
+        //variables
+
+
+
         //get input
         // setup keyboard input
         this.keys = this.input.keyboard.createCursorKeys();
@@ -23,8 +75,13 @@ class Play extends Phaser.Scene{
         //set background color
         this.cameras.main.setBackgroundColor('#872f29')
 
+
+
+
+
         //create new instance of character
-        this.p1Character = new Character(this, game.config.width/2, game.config.height- 50, 'arrows', 0, 'up').setOrigin(0.5, 0);
+        this.p1Character = new Character(this, game.config.width/2, game.config.height- 50, 'walk_right', 0, 'right').setOrigin(0.5, 0);
+        this.p1Character.setSize(30, 47, true);
         //create state machine for new character
         this.characterFSM = new StateMachine('idle', {
             idle: new IdleState(),
@@ -33,9 +90,13 @@ class Play extends Phaser.Scene{
         }, [this, this.p1Character]);
 
 
+
+
         //create new instance of boss
         this.boss = new Boss(this, game.config.width/2, 50, 'boss', 2).setOrigin(0.5);
         this.boss.setScale(5);
+        this.boss.setSize(52, 50, true);
+        this.boss.setBounce(1.01);
         //create state machine for boss
         this.bossFSM = new StateMachine('idle', {
             idle: new BossIdleState(),
@@ -44,31 +105,67 @@ class Play extends Phaser.Scene{
         }, [this, this.boss]);
 
 
-        //animation creation for character
+
+
+        //animation creation for character walk
         this.anims.create({
-            key: 'up',
+            key: 'walk-up',
             frameRate: 8,
             repeat: -1,
-            frames: this.anims.generateFrameNumbers('arrows', {start: 0, end: 0})
+            frames: this.anims.generateFrameNumbers('walk_up', {start: 0, end: 2})
         });
         this.anims.create({
-            key: 'down',
+            key: 'walk-down',
             frameRate: 8,
             repeat: -1,
-            frames: this.anims.generateFrameNumbers('arrows', {start: 1, end: 1})
+            frames: this.anims.generateFrameNumbers('walk_down', {start: 0, end: 2})
         });
         this.anims.create({
-            key: 'right',
+            key: 'walk-right',
             frameRate: 8,
             repeat: -1,
-            frames: this.anims.generateFrameNumbers('arrows', {start: 2, end: 2})
+            frames: this.anims.generateFrameNumbers('walk_right', {start: 0, end: 2})
+        });
+        
+        this.anims.create({
+            key: 'walk-left',
+            frameRate: 8,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('walk_left', {start: 0, end: 2})
+        });
+
+
+
+
+
+        //animation creation for character attack
+        this.anims.create({
+            key: 'attack-up',
+            frameRate: 8,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('attack_up', {start: 0, end: 3})
         });
         this.anims.create({
-            key: 'left',
+            key: 'attack-down',
             frameRate: 8,
             repeat: -1,
-            frames: this.anims.generateFrameNumbers('arrows', {start: 3, end: 3})
+            frames: this.anims.generateFrameNumbers('attack_down', {start: 0, end: 3})
         });
+        this.anims.create({
+            key: 'attack-left',
+            frameRate: 8,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('attack_left', {start: 0, end: 3})
+        });
+        this.anims.create({
+            key: 'attack-right',
+            frameRate: 8,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('attack_right', {start: 0, end: 3})
+        });
+
+
+
 
 
         //animation creation for boss
@@ -87,10 +184,14 @@ class Play extends Phaser.Scene{
         this.anims.create({
             key: 'damaged',
             frameRate: 8,
-            repeat: -1,
+            repeat: 1,
             frames: this.anims.generateFrameNumbers('boss', {start: 2, end: 2})
         });
 
+
+        this.physics.add.collider(this.p1Character, this.boss, function (character, boss){
+            character.collided = true;
+        });
 
 
     }
@@ -98,7 +199,16 @@ class Play extends Phaser.Scene{
     update(){
         this.characterFSM.step();
         this.bossFSM.step();
+
     }
 
     //any other function
+
+
+
+
+
+
+
+
 }
