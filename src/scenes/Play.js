@@ -8,6 +8,8 @@ class Play extends Phaser.Scene{
         //sean's loads
         this.load.image('rocket', './assets/rocket.png');
         this.load.image('ui', './assets/ui.png');
+        this.load.image('heart', './assets/heart.png');
+        this.load.image('line', './assets/line.png');
 
         /*
         //load walking spritesheets
@@ -88,9 +90,15 @@ class Play extends Phaser.Scene{
         this.heart4 = this.add.tileSprite(140,30,30,30, 'heart');
         this.heart5 = this.add.tileSprite(170,30,30,30, 'heart');
 
+
+        this.line = this.physics.add.staticGroup();
+
+        this.line.create(350, 50, 'line').setOrigin(0.5);
+
         //create hitbox for attack
         this.cartHitBox = this.add.rectangle(0, 0 ,35, 35, 0xffffff, 0.5);
         this.physics.add.existing(this.cartHitBox);
+
 
 
         //create new instance of character
@@ -107,12 +115,14 @@ class Play extends Phaser.Scene{
 
         
 
+        this.physics.add.collider(this.p1Character, this.line);
+
 
 
 
 
         //create new instance of boss
-        this.boss = new Boss(this, game.config.width/2, 50, 'boss', 2).setOrigin(0.5);
+        this.boss = new Boss(this, game.config.width/2, 300, 'boss', 2).setOrigin(0.5);
         this.boss.setScale(5);
         this.boss.setSize(52, 50, true);
         this.boss.setBounce(0.5);
@@ -122,6 +132,8 @@ class Play extends Phaser.Scene{
             attack: new BossAttackState(),
             damaged: new BossDamagedState()
         }, [this, this.boss]);
+
+        this.physics.add.collider(this.boss, this.line);
 
 
 
