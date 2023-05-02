@@ -33,6 +33,10 @@ class IdleState extends State{
             this.stateMachine.transition('move');
             return;
         }
+        if(space.isDown){
+            this.stateMachine.transition('attacking');
+            return;
+        }
 
         
     }
@@ -47,7 +51,14 @@ class MoveState extends State{
             this.stateMachine.transition('damaged');
             return;
         }
-        // transition to idle if not pressing movement keys
+
+        //attack
+        if(space.isDown){
+            this.stateMachine.transition('attacking');
+            return;
+        }
+
+        // transition to idle if not pressing movement keys or attacking
         if(!(left.isDown || right.isDown || up.isDown || down.isDown)) {
             this.stateMachine.transition('idle');
             return;
@@ -107,6 +118,16 @@ class DamagedState extends State{
     }
 }
 
+class AttackState extends State{
+    enter(scene, character) {
+        console.log('attacking');
+        character.setVelocity(0);
+        character.anims.play(`attack-${character.direction}`);
+        character.once('animationcomplete', () => {
+            this.stateMachine.transition('idle');
+        });
+    }
+}
 
 
 

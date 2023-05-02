@@ -73,7 +73,7 @@ class Play extends Phaser.Scene{
 
 
         //set background color
-        this.cameras.main.setBackgroundColor('#872f29')
+        this.cameras.main.setBackgroundColor('#dfff00');
 
 
 
@@ -86,8 +86,15 @@ class Play extends Phaser.Scene{
         this.characterFSM = new StateMachine('idle', {
             idle: new IdleState(),
             move: new MoveState(),
-            damaged: new DamagedState()
+            damaged: new DamagedState(),
+            attacking: new AttackState()
         }, [this, this.p1Character]);
+
+
+        //create hitbox for attack
+        this.cartHitBox = this.add.rectangle(0, 0 ,45, 45, 0xffffff, 0.5);
+        this.physics.add.existing(this.cartHitBox);
+
 
 
 
@@ -96,7 +103,7 @@ class Play extends Phaser.Scene{
         this.boss = new Boss(this, game.config.width/2, 50, 'boss', 2).setOrigin(0.5);
         this.boss.setScale(5);
         this.boss.setSize(52, 50, true);
-        this.boss.setBounce(1.01);
+        this.boss.setBounce(0.5);
         //create state machine for boss
         this.bossFSM = new StateMachine('idle', {
             idle: new BossIdleState(),
@@ -142,25 +149,21 @@ class Play extends Phaser.Scene{
         this.anims.create({
             key: 'attack-up',
             frameRate: 8,
-            repeat: -1,
             frames: this.anims.generateFrameNumbers('attack_up', {start: 0, end: 3})
         });
         this.anims.create({
             key: 'attack-down',
             frameRate: 8,
-            repeat: -1,
             frames: this.anims.generateFrameNumbers('attack_down', {start: 0, end: 3})
         });
         this.anims.create({
             key: 'attack-left',
             frameRate: 8,
-            repeat: -1,
             frames: this.anims.generateFrameNumbers('attack_left', {start: 0, end: 3})
         });
         this.anims.create({
             key: 'attack-right',
             frameRate: 8,
-            repeat: -1,
             frames: this.anims.generateFrameNumbers('attack_right', {start: 0, end: 3})
         });
 
