@@ -1,15 +1,20 @@
-class Dude extends Phaser.Scene{
+class SecondScene extends Phaser.Scene{
     constructor(){
-        super("dudeScene");
+        super("secondScene");
     }
     preload(){
         //load sprites
         this.load.image('rocket', './assets/rocket.png');
-        this.load.image('fridge', './assets/fridge.png');
-        this.load.image('dummy', './assets/Training_Dummy.png');
+        this.load.image('ground', './assets/wall.png');
         this.load.image('ui', './assets/ui.png');
-        this.load.image('heart', './assets/heart.png'); 
-        
+        this.load.image('door', './assets/door.png');
+        this.load.image('carrot', './assets/Carrot.png');
+        this.load.image('tomato', './assets/Tomato.png');
+        this.load.image('cabbage', './assets/Cabbage.png');
+        this.load.image('aisle', './assets/aisle.png');
+        this.load.image('cash_register', './assets/cash_register.png');
+
+        /*
         //load walking spritesheets
         this.load.spritesheet('walk_right', './assets/spritesheets/Move_Right.png',{
             frameWidth: 100,
@@ -57,7 +62,7 @@ class Dude extends Phaser.Scene{
             frameWidth: 64,
             frameHeight: 64
         });
-
+        */
     }
     create(){
         //get input
@@ -67,44 +72,47 @@ class Dude extends Phaser.Scene{
 
 
         //set background color
-        this.cameras.main.setBackgroundColor('#872f29')
-        //this.heart0 = this.add.image(0, 0, 'heart');
+        this.cameras.main.setBackgroundColor('#3f00ff')
 
-        //this.add.rectangle(0, 100, 100, 100, 0x4b8be2).setOrigin(0, 0);
-        //this.heart0 = this.add.tileSprite(0,0,30,30, 'heart');
         this.add.image(0,0, 'ui').setOrigin(0);
         this.heart1 = this.add.tileSprite(50,30,30,30, 'heart');
         this.heart2 = this.add.tileSprite(80,30,30,30, 'heart');
         this.heart3 = this.add.tileSprite(110,30,30,30, 'heart');
         this.heart4 = this.add.tileSprite(140,30,30,30, 'heart');
         this.heart5 = this.add.tileSprite(170,30,30,30, 'heart');
-        //this.add.image(0,0, 'ui').setOrigin(0);
 
+        this.carrot = this.add.tileSprite(560,30,100,100, 'carrot');
+        this.tomato = this.add.tileSprite(610,30,100,100, 'tomato');
+        this.cabbage = this.add.tileSprite(660,30,100,100, 'cabbage');
+
+
+        //  The platforms group contains the ground and the 2 ledges we can jump on
+        this.platforms = this.physics.add.staticGroup();
         //this.ui = this.physics.add.staticGroup();
-        this.fridge = this.physics.add.staticGroup();
-        this.dummy = this.physics.add.staticGroup();
+        this.door = this.physics.add.staticGroup();
 
-        //this.heart0 = this.add.tileSprite(50,55,30,30, 'heart');
-        //this.add.image(100,200, 'heart');
-
-        //this.heart = this.physics.add.staticGroup();
-        //this.heart.create(100,200, 'heart');
+        //this.ui.create(0,0, 'ui').setOrigin(0);
+        this.door.create(100,100, 'door').setScale(2).refreshBody();;
 
         //  Here we create the ground.
         //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-        this.fridge.create(400, 568, 'fridge').setScale(2).refreshBody();
-        //this.fridge = this.physics.add.sprite(400, 568, 'fridge');
-        this.dummy.create(150, 300, 'dummy');
-        //this.ui.create(0,0, 'ui').setOrigin(0);
+        this.platforms.create(600, 568, 'aisle')
 
-        //this.physics.add.collider(this.p1Character, this.fridge);
-        //this.physics.add.overlap(this.p1Character, this.fridge, this.whatup, null, this);
-        //this.physics.add.collider(this.p1Character, this.dummy);
-        //this.physics.add.overlap(this.p1Character, this.dummy, this.bounce, null, this);
+        //  Now let's create some ledges
+        this.platforms.create(600, 400, 'aisle');
+        //this.platforms.create(50, 250, 'aisle');
+        this.platforms.create(750, 400 - 168, 'aisle');
+
+        this.platforms.create(100, 600, 'cash_register');
+
+        //this.obsticle = new Object(this, game.config.width/2, game.config.height, 'wall').setOrigin(0.5, 0);  
+        //this.p2Character = new Character(this, game.config.width/2, game.config.height+ 50, 'rocket').setOrigin(0.5, 0); 
+        //this.physics.add.collider(this.p1Character, this.platforms);  
+        
+        //this.physics.add.overlap(this.p1Character, this.door, this.whatup, null, this);
        
         //create new instance of character
         this.p1Character = new Character(this, game.config.width/2, game.config.height- 50, 'walk_right', 0, 'right').setOrigin(0.5, 0);
-        //this.p1Character = new Character(this, game.config.width/2, game.config.height- 50, 'rocket').setOrigin(0.5, 0);
         this.p1Character.setSize(30, 47, true);
         //create state machine for new character
         this.characterFSM = new StateMachine('idle', {
@@ -114,34 +122,17 @@ class Dude extends Phaser.Scene{
             attacking: new AttackState()
         }, [this, this.p1Character]);
 
-        //this.physics.add.collider(this.p1Character, this.fridge);
-        this.physics.add.overlap(this.p1Character, this.fridge, this.whatup, null, this);
-        this.physics.add.collider(this.p1Character, this.dummy);
-        this.physics.add.overlap(this.p1Character, this.dummy, this.bounce, null, this);
+        console.log("made it to second scene");
+                //this.obsticle = new Object(this, game.config.width/2, game.config.height, 'wall').setOrigin(0.5, 0);  
+        //this.p2Character = new Character(this, game.config.width/2, game.config.height+ 50, 'rocket').setOrigin(0.5, 0); 
+        this.physics.add.collider(this.p1Character, this.platforms);  
+        
+        this.physics.add.overlap(this.p1Character, this.door, this.whatup, null, this);
 
         keyENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+        keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-        console.log("made it to first scene");
-
-        let menuConfig = {
-            fontFamily: 'Courier',
-            fontSize: '28px',
-            backgroundColor: '#F3B141',
-            color: '#843605',
-            align: 'right',
-            padding: {
-                top: 5,
-                bottom: 5,
-            },
-            fixedWidth: 0
-        }
-
-        this.add.text(200, 100, 'Controls:', menuConfig).setOrigin(0.5);
-        this.add.text(200, 150, 'Arrow Keys to Move', menuConfig).setOrigin(0.5);
-        this.add.text(200, 200, 'Space to Attack', menuConfig).setOrigin(0.5);
-        this.add.text(400, 500, 'Touch Fridge to Move to Next Zone', menuConfig).setOrigin(0.5);
-        let leave_check = false;
-
+        /*
                 //animation creation for character walk
                 this.anims.create({
                     key: 'walk-up',
@@ -194,33 +185,24 @@ class Dude extends Phaser.Scene{
                     frameRate: 8,
                     frames: this.anims.generateFrameNumbers('attack_right', {start: 0, end: 3})
                 });
+                */
 
     }
     //any other functions
     update(){
         this.characterFSM.step();
 
-        //this.physics.add.overlap(this.player, this.stars, this.whatup, null, this);
-
-        //this.physics.add.collider(this.fridge, this.p1Character, function (fridge, p1Character) {
-              //leave_check = true;
+        //this.physics.add.collider(this.platforms, this.hero, function (platforms, hero) {
+            //console.log("touched the dude")
         //})
-        //if (Phaser.Input.Keyboard.JustDown(keyENTER) && leave_check == true) {
-            //this.scene.start('secondRoomScene');    
-          //}
+        //this.physics.add.collider(this.p1Character, this.platforms);
 
         if (Phaser.Input.Keyboard.JustDown(keyENTER)) {
-                this.scene.start('secondScene');
+            this.scene.start('playScene');
         }
     }
-
-
     whatup (player, fridge) {
         console.log("touching");
-        this.scene.start('secondScene');
+        this.scene.start('playScene');
     };
-
-    bounce (player, dummy) {
-        console.log("bounce");
-    }
 }

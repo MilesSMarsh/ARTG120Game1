@@ -9,7 +9,9 @@ let config = {
             //debug: true
         }
     },
-    scene: [ Play ]
+    scene: [ TitleScreen, Dude, SecondScene, Play, GameOver, GoodEnding ]
 }
 
 const game = new Phaser.Game(config);
+
+let keyENTER, keySPACE;
