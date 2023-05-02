@@ -90,13 +90,19 @@ class Play extends Phaser.Scene{
         this.heart4 = this.add.tileSprite(140,30,30,30, 'heart');
         this.heart5 = this.add.tileSprite(170,30,30,30, 'heart');
 
+
         this.line = this.physics.add.staticGroup();
 
         this.line.create(350, 50, 'line').setOrigin(0.5);
 
+        //create hitbox for attack
+        this.cartHitBox = this.add.rectangle(0, 0 ,35, 35, 0xffffff, 0.5);
+        this.physics.add.existing(this.cartHitBox);
+
+
 
         //create new instance of character
-        this.p1Character = new Character(this, game.config.width/2, game.config.height- 50, 'walk_right', 0, 'right').setOrigin(0.5, 0);
+        this.p1Character = new Character(this, game.config.width/2, game.config.height- 50, 'walk_right', 0, 'right', this.cartHitBox).setOrigin(0.5, 0);
         this.p1Character.setSize(30, 47, true);
         //create state machine for new character
         this.characterFSM = new StateMachine('idle', {
@@ -107,9 +113,7 @@ class Play extends Phaser.Scene{
         }, [this, this.p1Character]);
 
 
-        //create hitbox for attack
-        this.cartHitBox = this.add.rectangle(0, 0 ,45, 45, 0xffffff, 0.5);
-        this.physics.add.existing(this.cartHitBox);
+        
 
         this.physics.add.collider(this.p1Character, this.line);
 
@@ -224,6 +228,7 @@ class Play extends Phaser.Scene{
     update(){
         this.characterFSM.step();
         this.bossFSM.step();
+        this.p1Character.moveHitBox();
 
         if (Phaser.Input.Keyboard.JustDown(keyENTER)) {
             this.scene.start('goodEndingScene');
