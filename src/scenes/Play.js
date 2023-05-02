@@ -23,19 +23,24 @@ class Play extends Phaser.Scene{
         //set background color
         this.cameras.main.setBackgroundColor('#872f29')
 
-        this.p1Character = new Character(this, game.config.width/2, game.config.height- 50, 'arrows', 0).setOrigin(0.5, 0);
-        this.boss = new Boss(this, game.config.width/2, 50, 'boss', 2).setOrigin(0.5);
-        this.boss.setScale(5);
-
-
+        //create new instance of character
+        this.p1Character = new Character(this, game.config.width/2, game.config.height- 50, 'arrows', 0, 'up').setOrigin(0.5, 0);
+        //create state machine for new character
         this.characterFSM = new StateMachine('idle', {
             idle: new IdleState(),
-            move: new MoveState()
+            move: new MoveState(),
+            damaged: new DamagedState()
         }, [this, this.p1Character]);
 
+
+        //create new instance of boss
+        this.boss = new Boss(this, game.config.width/2, 50, 'boss', 2).setOrigin(0.5);
+        this.boss.setScale(5);
+        //create state machine for boss
         this.bossFSM = new StateMachine('idle', {
             idle: new BossIdleState(),
-            attack: new BossAttackState()
+            attack: new BossAttackState(),
+            damaged: new BossDamagedState()
         }, [this, this.boss]);
 
 
@@ -89,9 +94,11 @@ class Play extends Phaser.Scene{
 
 
     }
-    //any other functions
+    
     update(){
         this.characterFSM.step();
         this.bossFSM.step();
     }
+
+    //any other function
 }

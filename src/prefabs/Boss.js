@@ -29,3 +29,12 @@ class BossAttackState extends State{
         });
     }
 }
+
+class BossDamagedState extends State{
+    enter(scene, boss){
+        boss.anims.play('damaged');
+        boss.once('animationcomplete', () => {
+            this.stateMachine.transition('idle');
+        });
+    }
+}
