@@ -1,5 +1,5 @@
 class Character extends Phaser.Physics.Arcade.Sprite{
-    constructor(scene, x, y, texture, frame, direction, hitbox){
+    constructor(scene, x, y, texture, frame, direction, hitbox, health){
         super(scene, x, y, texture, frame);
 
         scene.add.existing(this);
@@ -10,8 +10,13 @@ class Character extends Phaser.Physics.Arcade.Sprite{
         this.charVelocity = 200;
         this.collided = false;
         this.cartHitBox = hitbox;
+        this.currHealth = health;
+        this.attacking = true;
+
 
     }
+
+    
 
     moveHitBox(){
         //moves hitbox
@@ -33,6 +38,10 @@ class Character extends Phaser.Physics.Arcade.Sprite{
                 this.cartHitBox.y = this.y+50;
                 break;
         }
+    }
+
+    handleAttackOverlap(obj){
+        console.log(obj);
     }
     
 }

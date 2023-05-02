@@ -89,7 +89,7 @@ class Play extends Phaser.Scene{
         this.heart5 = this.add.tileSprite(170,30,30,30, 'heart');
 
         //create hitbox for attack
-        this.cartHitBox = this.add.rectangle(0, 0 ,35, 35, 0xffffff, 0.5);
+        this.cartHitBox = this.add.rectangle(game.config.width, game.config.height ,35, 35, 0xffffff, 0.5);
         this.physics.add.existing(this.cartHitBox);
 
 
@@ -123,6 +123,9 @@ class Play extends Phaser.Scene{
             damaged: new BossDamagedState()
         }, [this, this.boss]);
 
+
+        //create overlap for hitbox and boss
+        this.physics.add.overlap(this.cartHitBox, this.boss, this.p1Character.handleAttackOverlap(this.boss), undefined, this);
 
 
 /*
@@ -198,7 +201,7 @@ class Play extends Phaser.Scene{
         });
         this.anims.create({
             key: 'damaged',
-            frameRate: 8,
+            frameRate: 1,
             repeat: 1,
             frames: this.anims.generateFrameNumbers('boss', {start: 2, end: 2})
         });
