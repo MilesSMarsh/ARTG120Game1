@@ -102,7 +102,7 @@ class Play extends Phaser.Scene{
 
 
         //create new instance of character
-        this.p1Character = new Character(this, game.config.width/2, game.config.height- 50, 'walk_right', 0, 'right', this.cartHitBox).setOrigin(0.5, 0);
+        this.p1Character = new Character(this, game.config.width/2, game.config.height- 50, 'walk_right', 0, 'right', this.cartHitBox, 5).setOrigin(0.5, 0);
         this.p1Character.setSize(30, 47, true);
         //create state machine for new character
         this.characterFSM = new StateMachine('idle', {
@@ -235,6 +235,50 @@ class Play extends Phaser.Scene{
 
         if (Phaser.Input.Keyboard.JustDown(keyENTER)) {
             this.scene.start('goodEndingScene');
+        }
+
+
+        if (this.p1Character.currHealth == 4){
+            //console.log("health");
+            this.heart5.setVisible(false);
+            this.heart4.setVisible(true);
+            this.heart3.setVisible(true);
+            this.heart2.setVisible(true);
+            this.heart1.setVisible(true);
+        }
+        if (this.p1Character.currHealth == 3){
+            //console.log("health");
+            this.heart5.setVisible(false);
+            this.heart4.setVisible(false);
+            this.heart3.setVisible(true);
+            this.heart2.setVisible(true);
+            this.heart1.setVisible(true);
+        }
+        if (this.p1Character.currHealth == 2){
+            //console.log("health");
+            this.heart5.setVisible(false);
+            this.heart4.setVisible(false);
+            this.heart3.setVisible(false);
+            this.heart2.setVisible(true);
+            this.heart1.setVisible(true);
+        }
+        if (this.p1Character.currHealth == 1){
+            //console.log("health");
+            this.heart5.setVisible(false);
+            this.heart4.setVisible(false);
+            this.heart3.setVisible(false);
+            this.heart2.setVisible(false);
+            this.heart1.setVisible(true);
+        }
+        if (this.p1Character.currHealth == 0){
+            //console.log("health");
+            this.heart5.setVisible(false);
+            this.heart4.setVisible(false);
+            this.heart3.setVisible(false);
+            this.heart2.setVisible(false);
+            this.heart1.setVisible(false);
+            //maybe play a cute little animation
+            this.scene.start('gameOverScene');
         }
 
     }
