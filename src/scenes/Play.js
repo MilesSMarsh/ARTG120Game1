@@ -96,7 +96,7 @@ class Play extends Phaser.Scene{
         this.boss = new Boss(this, game.config.width/2, 300, 'boss', 2).setOrigin(0.5);
         this.boss.setScale(5);
         this.boss.setSize(52, 50, true);
-        this.boss.setBounce(1.2);
+        this.boss.setBounce(0.8);
 
 
         //create state machine for boss

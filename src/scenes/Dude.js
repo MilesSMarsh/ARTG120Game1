@@ -66,7 +66,7 @@ class Dude extends Phaser.Scene{
         this.keys = this.input.keyboard.createCursorKeys();
         this.keys.HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
 
-        this.cartHitBox = this.add.rectangle(game.config.width, game.config.height ,35, 35, 0xffffff, 0.5);
+        this.cartHitBox = this.add.rectangle(game.config.width, game.config.height ,35, 35, 0xffffff, 0);
         this.physics.add.existing(this.cartHitBox);
         this.physics.world.remove(this.cartHitBox.body);
 
@@ -157,7 +157,7 @@ class Dude extends Phaser.Scene{
 
         this.add.text(200, 100, 'Controls:', menuConfig).setOrigin(0.5);
         this.add.text(200, 150, 'Arrow Keys to Move', menuConfig).setOrigin(0.5);
-        this.add.text(200, 200, 'Space to Attack', menuConfig).setOrigin(0.5);
+        //this.add.text(200, 200, 'Space to Attack', menuConfig).setOrigin(0.5);
         this.add.text(400, 500, 'Touch Fridge to Move to Next Zone', menuConfig).setOrigin(0.5);
         let leave_check = false;
 
@@ -231,9 +231,9 @@ class Dude extends Phaser.Scene{
 
         this.p1Character.moveHitBox();
 
-        if (Phaser.Input.Keyboard.JustDown(keyENTER)) {
-                this.scene.start('secondScene');
-        }
+        //if (Phaser.Input.Keyboard.JustDown(keyENTER)) {
+        //        this.scene.start('secondScene');
+        //}
         if (this.p1Character.currHealth == 4){
             //console.log("health");
             this.heart5.setVisible(false);

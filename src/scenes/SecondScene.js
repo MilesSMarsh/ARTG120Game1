@@ -14,58 +14,16 @@ class SecondScene extends Phaser.Scene{
         this.load.image('aisle', './assets/aisle.png');
         this.load.image('cash_register', './assets/cash_register.png');
         this.load.image('line', './assets/line.png');
+        this.load.image('meatball', './assets/meatball2.png');
 
-        /*
-        //load walking spritesheets
-        this.load.spritesheet('walk_right', './assets/spritesheets/Move_Right.png',{
-            frameWidth: 100,
-            frameHeight: 100
-        });
-        this.load.spritesheet('walk_left', './assets/spritesheets/Move_Left.png',{
-            frameWidth: 100,
-            frameHeight: 100
-        });
-        this.load.spritesheet('walk_up', './assets/spritesheets/Move_Up.png',{
-            frameWidth: 100,
-            frameHeight: 100
-        });
-        this.load.spritesheet('walk_down', './assets/spritesheets/Move_Down.png',{
-            frameWidth: 100,
-            frameHeight: 100
-        });
-
-
-
-
-        //load attack sprite sheets
-        this.load.spritesheet('attack_right', './assets/spritesheets/Attack_Right.png',{
-            frameWidth: 100,
-            frameHeight: 100
-        });
-        this.load.spritesheet('attack_left', './assets/spritesheets/Attack_Left.png',{
-            frameWidth: 100,
-            frameHeight: 100
-        });
-        this.load.spritesheet('attack_down', './assets/spritesheets/Attack_Down.png',{
-            frameWidth: 100,
-            frameHeight: 100
-        });
-        this.load.spritesheet('attack_up', './assets/spritesheets/Attack_Up.png',{
-            frameWidth: 100,
-            frameHeight: 100
-        });
-
-
-
-
-
-        this.load.spritesheet('boss', './assets/Boss.png',{
-            frameWidth: 64,
-            frameHeight: 64
-        });
-        */
+        
     }
     create(){
+
+        this.hasTomato = false;
+        this.hasCarrot = false;
+        this.hasCabbage = false;
+
         //get input
         // setup keyboard input
         this.keys = this.input.keyboard.createCursorKeys();
@@ -82,10 +40,68 @@ class SecondScene extends Phaser.Scene{
         this.heart4 = this.add.tileSprite(140,30,30,30, 'heart');
         this.heart5 = this.add.tileSprite(170,30,30,30, 'heart');
 
-        this.carrot = this.add.tileSprite(560,30,100,100, 'carrot');
-        this.tomato = this.add.tileSprite(610,30,100,100, 'tomato');
-        this.cabbage = this.add.tileSprite(660,30,100,100, 'cabbage');
+        this.carrot = this.add.tileSprite(560,30,39,39, 'carrot');
+        this.tomato = this.add.tileSprite(610,30,40,40, 'tomato');
+        this.cabbage = this.add.tileSprite(660,30, 40,40, 'cabbage');
 
+        //this.carrotEnemyTest = this.add.tileSprite(420,350,100,100, 'carrot');
+
+        this.carrotEnemy= this.physics.add.group({
+            key: 'carrot',
+            repeat: 0,
+            setXY: { x: 420, y: 250, stepX: 50 }
+        });
+
+        this.carrotEnemy.children.iterate(function (child) {
+
+            child.setBounce(1);
+            child.setVelocityX(Phaser.Math.FloatBetween(100, 200));
+            child.setVelocityY(Phaser.Math.FloatBetween(100, 200));
+            child.setCollideWorldBounds(true);
+    
+        });
+
+        this.tomatoEnemy= this.physics.add.group({
+            key: 'tomato',
+            repeat: 0,
+            setXY: { x: 450, y: 150}
+        });
+
+        this.tomatoEnemy.children.iterate(function (child) {
+
+            child.setBounce(1);
+            child.setVelocityX(Phaser.Math.FloatBetween(100, 200));
+            child.setVelocityY(Phaser.Math.FloatBetween(100, 200));
+            child.setCollideWorldBounds(true);
+    
+        });
+
+        this.cabbageEnemy= this.physics.add.group({
+            key: 'cabbage',
+            repeat: 0,
+            setXY: { x: 250, y: 250, stepX: 150 }
+        });
+        
+        this.cabbageEnemy.children.iterate(function (child) {
+
+        child.setBounce(1);
+        child.setVelocityX(Phaser.Math.FloatBetween(100, 200));
+        child.setVelocityY(Phaser.Math.FloatBetween(100, 200));
+        child.setCollideWorldBounds(true);
+
+        });
+
+    
+        
+        //this.meatball= this.physics.add.group({
+        //    key: 'meatball',
+        //    repeat: 1,
+        //    setXY: { x: 220, y: 100, stepX: 150 },
+        //});
+        //this.meatball.children.iterate(child =>
+        //{    
+        //    child.setBounceY(Phaser.Math.FloatBetween(0.5, 0.8));
+        //});
 
         //  The platforms group contains the ground and the 2 ledges we can jump on
         this.platforms = this.physics.add.staticGroup();
@@ -132,72 +148,33 @@ class SecondScene extends Phaser.Scene{
         //this.p2Character = new Character(this, game.config.width/2, game.config.height+ 50, 'rocket').setOrigin(0.5, 0); 
         this.physics.add.collider(this.p1Character, this.platforms);  
         this.physics.add.collider(this.p1Character, this.line);
+
+        this.physics.add.overlap(this.p1Character, this.meatball, this.hitMeatball, null, this);
+        this.physics.add.overlap(this.p1Character, this.carrotEnemy, this.getCarrot, null, this);
+        this.physics.add.overlap(this.p1Character, this.cabbageEnemy, this.getCabbage, null, this);
+        this.physics.add.overlap(this.p1Character, this.tomatoEnemy, this.getTomato, null, this);
         
-        this.physics.add.overlap(this.p1Character, this.door, this.whatup, null, this);
+        //this.physics.add.overlap(this.p1Character, this.door, this.whatup, null, this);
 
         keyENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-        /*
-                //animation creation for character walk
-                this.anims.create({
-                    key: 'walk-up',
-                    frameRate: 8,
-                    repeat: -1,
-                    frames: this.anims.generateFrameNumbers('walk_up', {start: 0, end: 2})
-                });
-                this.anims.create({
-                    key: 'walk-down',
-                    frameRate: 8,
-                    repeat: -1,
-                    frames: this.anims.generateFrameNumbers('walk_down', {start: 0, end: 2})
-                });
-                this.anims.create({
-                    key: 'walk-right',
-                    frameRate: 8,
-                    repeat: -1,
-                    frames: this.anims.generateFrameNumbers('walk_right', {start: 0, end: 2})
-                });
-                
-                this.anims.create({
-                    key: 'walk-left',
-                    frameRate: 8,
-                    repeat: -1,
-                    frames: this.anims.generateFrameNumbers('walk_left', {start: 0, end: 2})
-                });
         
-        
-        
-        
-        
-                //animation creation for character attack
-                this.anims.create({
-                    key: 'attack-up',
-                    frameRate: 8,
-                    frames: this.anims.generateFrameNumbers('attack_up', {start: 0, end: 3})
-                });
-                this.anims.create({
-                    key: 'attack-down',
-                    frameRate: 8,
-                    frames: this.anims.generateFrameNumbers('attack_down', {start: 0, end: 3})
-                });
-                this.anims.create({
-                    key: 'attack-left',
-                    frameRate: 8,
-                    frames: this.anims.generateFrameNumbers('attack_left', {start: 0, end: 3})
-                });
-                this.anims.create({
-                    key: 'attack-right',
-                    frameRate: 8,
-                    frames: this.anims.generateFrameNumbers('attack_right', {start: 0, end: 3})
-                });
-                */
+        this.physics.add.collider(this.carrotEnemy, this.platforms);
+        this.physics.add.collider(this.tomatoEnemy, this.platforms);
+        this.physics.add.collider(this.cabbageEnemy, this.platforms);
 
     }
     //any other functions
     update(){
         this.characterFSM.step();
 
+        if(this.hasCabbage && this.hasCarrot && this.hasTomato){
+            this.physics.add.overlap(this.p1Character, this.door, this.whatup, null, this);
+ 
+        }
+
+        //console.log(this.carrotEnemy.x);
         //this.physics.add.collider(this.platforms, this.hero, function (platforms, hero) {
             //console.log("touched the dude")
         //})
@@ -254,4 +231,25 @@ class SecondScene extends Phaser.Scene{
         console.log("touching");
         this.scene.start('playScene');
     };
+    getCarrot (player, carrot) {
+        console.log("got carrot");
+        this.hasCarrot = true;
+        carrot.disableBody(true, true);
+        this.carrot.setVisible(false);
+    }
+    hitMeatball (player, meatball) {
+        this.p1Character.currHealth -= 1;
+    }
+    getCabbage (player, cabbage) {
+        console.log("got cabbage");
+        this.hasCabbage = true;
+        cabbage.disableBody(true, true);
+        this.cabbage.setVisible(false);
+    }
+    getTomato (player, tomato) {
+        console.log("got tomato");
+        this.hasTomato = true;
+        tomato.disableBody(true, true);
+        this.tomato.setVisible(false);
+    }
 }

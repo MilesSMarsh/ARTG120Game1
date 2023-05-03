@@ -4,7 +4,7 @@ class GameOver extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('good_end_screen', './assets/Bad_Ending.png');
+        this.load.image('bad_end_screen', './assets/Bad_Ending.png');
     }
 
     create() {
@@ -22,7 +22,7 @@ class GameOver extends Phaser.Scene {
         }
 
         //this.add.text(250, 250, 'Enter', menuConfig).setOrigin(0.5);
-        this.screen = this.add.tileSprite(0,0,700,700, 'good_end_screen').setOrigin(0);
+        this.screen = this.add.tileSprite(0,0,700,700, 'bad_end_screen').setOrigin(0);
 
         //define keys
         keyENTER= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
