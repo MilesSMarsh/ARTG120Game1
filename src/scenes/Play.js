@@ -115,7 +115,6 @@ class Play extends Phaser.Scene{
 
 
         
-
         this.physics.add.collider(this.p1Character, this.line);
 
 
@@ -284,13 +283,9 @@ class Play extends Phaser.Scene{
 
     }
 
-    //any other function
-
-
-
-
-
-
 
 
 }
+
+
+

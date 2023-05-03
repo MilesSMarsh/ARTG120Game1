@@ -40,6 +40,7 @@ class Character extends Phaser.Physics.Arcade.Sprite{
     }
 
     handleAttackOverlap(obj){
+        console.log(`this is the object that was hit:\n`);
         console.log(obj);
     }
     
@@ -143,6 +144,7 @@ class DamagedState extends State{
         scene.time.delayedCall(300, () => {
             character.clearTint();
             this.stateMachine.transition('idle');
+            character.currHealth -= 1;
             character.collided = false;
             return;
         });
@@ -153,11 +155,11 @@ class AttackState extends State{
     enter(scene, character) {
         console.log('attacking');
         character.setVelocity(0);
-        this.physics.world.add(this.cartHitBox.body);
+        scene.physics.world.add(character.cartHitBox.body);
         character.anims.play(`attack-${character.direction}`);
         character.once('animationcomplete', () => {
             this.stateMachine.transition('idle');
-            this.physics.world.remove(this.cartHitBox.body);
+            scene.physics.world.remove(character.cartHitBox.body);
             return;
         });
     }

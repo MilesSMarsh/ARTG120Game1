@@ -66,6 +66,11 @@ class Dude extends Phaser.Scene{
         this.keys = this.input.keyboard.createCursorKeys();
         this.keys.HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
 
+        this.cartHitBox = this.add.rectangle(game.config.width, game.config.height ,35, 35, 0xffffff, 0.5);
+        this.physics.add.existing(this.cartHitBox);
+        this.physics.world.remove(this.cartHitBox.body);
+
+        
 
         //set background color
         this.cameras.main.setBackgroundColor('#872f29')
@@ -101,13 +106,13 @@ class Dude extends Phaser.Scene{
         this.line.create(350, 50, 'line').setOrigin(0.5);
         //this.ui.create(0,0, 'ui').setOrigin(0);
 
+
         //this.physics.add.collider(this.p1Character, this.fridge);
         //this.physics.add.overlap(this.p1Character, this.fridge, this.whatup, null, this);
         //this.physics.add.collider(this.p1Character, this.dummy);
         //this.physics.add.overlap(this.p1Character, this.dummy, this.bounce, null, this);
        
-        this.cartHitBox = this.add.rectangle(game.config.width, game.config.height ,35, 35, 0xffffff, 0.5);
-        this.physics.add.existing(this.cartHitBox);
+        
 
         //create new instance of character
         this.p1Character = new Character(this, game.config.width/2, game.config.height- 50, 'walk_right', 0, 'right', this.cartHitBox, 5).setOrigin(0.5, 0);
@@ -121,6 +126,11 @@ class Dude extends Phaser.Scene{
             damaged: new DamagedState(),
             attacking: new AttackState()
         }, [this, this.p1Character]);
+
+
+
+        this.physics.add.overlap(this.cartHitBox, this.dummy, this.p1Character.handleAttackOverlap(this.dummy), undefined, this);
+
 
         //this.physics.add.collider(this.p1Character, this.fridge);
         this.physics.add.overlap(this.p1Character, this.fridge, this.whatup, null, this);
@@ -217,6 +227,9 @@ class Dude extends Phaser.Scene{
         //if (Phaser.Input.Keyboard.JustDown(keyENTER) && leave_check == true) {
             //this.scene.start('secondRoomScene');    
           //}
+
+
+        this.p1Character.moveHitBox();
 
         if (Phaser.Input.Keyboard.JustDown(keyENTER)) {
                 this.scene.start('secondScene');
