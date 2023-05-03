@@ -9,7 +9,7 @@ class Boss extends Phaser.Physics.Arcade.Sprite{
         this.attacked = false;
         this.stateBlocker = false;
         this.body.setCollideWorldBounds(true);
-        this.bossHealth = 30;
+        this.bossHealth = 20;
 
     }
 }

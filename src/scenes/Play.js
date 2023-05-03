@@ -114,6 +114,23 @@ class Play extends Phaser.Scene{
             boss.attacked = true;
         });
 
+
+        let scoreConfig = {
+            fontFamily: 'Courier',
+            fontSize: '28px',
+            backgroundColor: '#F3B141',
+            color: '#843605',
+            align: 'right',
+            padding: {
+              top: 5,
+              bottom: 5,
+            },
+            fixedWidth: 100
+        }
+        
+        //this.bossHealth = this.add.text(game.config.width/2, 30, this.boss.bossHealth, scoreConfig);
+        
+
         //animation creation for boss
         this.anims.create({
             key: 'idle',
@@ -157,7 +174,7 @@ class Play extends Phaser.Scene{
         //create overlap for hitbox and boss
         //this.physics.add.overlap(this.cartHitBox, this.boss, this.p1Character.handleAttackOverlap(this.boss), null, this);
         
-
+        this.bossHealth = this.boss.bossHealth;
         if(this.boss.bossHealth <= 0) {
             this.scene.start('goodEndingScene');
         }
