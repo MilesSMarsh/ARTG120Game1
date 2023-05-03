@@ -9,8 +9,10 @@ class Character extends Phaser.Physics.Arcade.Sprite{
         this.direction = direction;
         this.charVelocity = 200;
         this.collided = false;
+        this.attaking = false;
         this.cartHitBox = hitbox;
         this.currHealth = health;
+        this.bossCollide = false;
 
 
     }
@@ -122,32 +124,42 @@ class MoveState extends State{
 class DamagedState extends State{
     enter(scene, character){
         console.log('oof');
-        character.setTint('0xFF0000');
         character.anims.play(`walk-${character.direction}`);
         character.anims.stop();
 
         switch(character.direction) {
             case 'up':
-                character.setVelocityY(character.charVelocity*2);
+                character.setVelocityY(character.charVelocity+1*4);
                 break;
             case 'down':
-                character.setVelocityY(-character.charVelocity*2);
+                character.setVelocityY((-character.charVelocity-1)*4);
                 break;
             case 'left':
-                character.setVelocityX(character.charVelocity*2);
+                character.setVelocityX((character.charVelocity+1)*4);
                 break;
             case 'right':
-                character.setVelocityX(-character.charVelocity*2);
+                character.setVelocityX((-character.charVelocity-1)*4);
                 break;
         }
 
-        scene.time.delayedCall(300, () => {
-            character.clearTint();
-            this.stateMachine.transition('idle');
-            character.currHealth -= 1;
-            character.collided = false;
-            return;
-        });
+
+        if(!character.bossCollide){
+            scene.time.delayedCall(300, () => {
+                this.stateMachine.transition('idle');
+                character.currHealth -= 1;
+                character.collided = false;
+                character.bossCollide = false;
+                return;
+            });
+        }
+        else{
+            scene.time.delayedCall(300, () => {
+                character.collided = false;
+                character.bossCollide = false;
+                this.stateMachine.transition('idle');
+                return;
+            });
+        }
     }
 }
 
@@ -155,11 +167,9 @@ class AttackState extends State{
     enter(scene, character) {
         console.log('attacking');
         character.setVelocity(0);
-        scene.physics.world.add(character.cartHitBox.body);
         character.anims.play(`attack-${character.direction}`);
         character.once('animationcomplete', () => {
             this.stateMachine.transition('idle');
-            scene.physics.world.remove(character.cartHitBox.body);
             return;
         });
     }

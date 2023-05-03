@@ -195,22 +195,22 @@ class Dude extends Phaser.Scene{
                 //animation creation for character attack
                 this.anims.create({
                     key: 'attack-up',
-                    frameRate: 8,
+                    frameRate: 12,
                     frames: this.anims.generateFrameNumbers('attack_up', {start: 0, end: 3})
                 });
                 this.anims.create({
                     key: 'attack-down',
-                    frameRate: 8,
+                    frameRate: 12,
                     frames: this.anims.generateFrameNumbers('attack_down', {start: 0, end: 3})
                 });
                 this.anims.create({
                     key: 'attack-left',
-                    frameRate: 8,
+                    frameRate: 12,
                     frames: this.anims.generateFrameNumbers('attack_left', {start: 0, end: 3})
                 });
                 this.anims.create({
                     key: 'attack-right',
-                    frameRate: 8,
+                    frameRate: 12,
                     frames: this.anims.generateFrameNumbers('attack_right', {start: 0, end: 3})
                 });
 

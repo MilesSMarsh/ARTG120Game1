@@ -6,7 +6,7 @@ let config = {
     physics:{
         default: "arcade",
         arcade : {
-            debug: true
+            //debug: true
         }
     },
     scene: [ TitleScreen, Dude, SecondScene, Play, GameOver, GoodEnding ]

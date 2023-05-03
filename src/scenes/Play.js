@@ -10,51 +10,13 @@ class Play extends Phaser.Scene{
         this.load.image('ui', './assets/ui.png');
         this.load.image('heart', './assets/heart.png');
         this.load.image('line', './assets/line.png');
+        this.load.image('spikes', './assets/spikes.png');
 
-        /*
-        //load walking spritesheets
-        this.load.spritesheet('walk_right', './assets/spritesheets/Move_Right.png',{
-            frameWidth: 100,
-            frameHeight: 100
-        });
-        this.load.spritesheet('walk_left', './assets/spritesheets/Move_Left.png',{
-            frameWidth: 100,
-            frameHeight: 100
-        });
-        this.load.spritesheet('walk_up', './assets/spritesheets/Move_Up.png',{
-            frameWidth: 100,
-            frameHeight: 100
-        });
-        this.load.spritesheet('walk_down', './assets/spritesheets/Move_Down.png',{
-            frameWidth: 100,
-            frameHeight: 100
-        });
+       
 
 
 
 
-        //load attack sprite sheets
-        this.load.spritesheet('attack_right', './assets/spritesheets/Attack_Right.png',{
-            frameWidth: 100,
-            frameHeight: 100
-        });
-        this.load.spritesheet('attack_left', './assets/spritesheets/Attack_Left.png',{
-            frameWidth: 100,
-            frameHeight: 100
-        });
-        this.load.spritesheet('attack_down', './assets/spritesheets/Attack_Down.png',{
-            frameWidth: 100,
-            frameHeight: 100
-        });
-        this.load.spritesheet('attack_up', './assets/spritesheets/Attack_Up.png',{
-            frameWidth: 100,
-            frameHeight: 100
-        });
-
-
-
-
-*/
         this.load.spritesheet('boss', './assets/Boss.png',{
             frameWidth: 64,
             frameHeight: 64
@@ -92,19 +54,24 @@ class Play extends Phaser.Scene{
 
 
         this.line = this.physics.add.staticGroup();
-
         this.line.create(350, 50, 'line').setOrigin(0.5);
 
+        this.spikeWall = this.physics.add.staticGroup();
+        this.spikeWall.create(350, 695, 'spikes').setOrigin(0.5);
+        this.spikeWall.create(350, 60, 'spikes').setScale(-1);
+
         //create hitbox for attack
-        this.cartHitBox = this.add.rectangle(game.config.width, game.config.height ,35, 35, 0xffffff, 0.5);
-        this.physics.add.existing(this.cartHitBox);
-        this.physics.world.remove(this.cartHitBox.body);
+        this.cartHitBox = this.add.rectangle(game.config.width, game.config.height ,35, 35, 0xffffff, 0);
+        //this.physics.add.existing(this.cartHitBox);
+        //this.physics.world.remove(this.cartHitBox.body);
 
 
 
         //create new instance of character
-        this.p1Character = new Character(this, game.config.width/2, game.config.height- 50, 'walk_right', 0, 'right', this.cartHitBox, 5).setOrigin(0.5, 0);
+        this.p1Character = new Character(this, game.config.width/2, 500, 'walk_right', 0, 'right', this.cartHitBox, 5).setOrigin(0.5, 0);
         this.p1Character.setSize(30, 47, true);
+
+
         //create state machine for new character
         this.characterFSM = new StateMachine('idle', {
             idle: new IdleState(),
@@ -114,8 +81,12 @@ class Play extends Phaser.Scene{
         }, [this, this.p1Character]);
 
 
-        
+        //create collider for character and ui
         this.physics.add.collider(this.p1Character, this.line);
+
+        this.physics.add.collider(this.p1Character, this.spikeWall, function(character, spike){
+            character.collided = true;
+        });
 
 
 
@@ -125,7 +96,9 @@ class Play extends Phaser.Scene{
         this.boss = new Boss(this, game.config.width/2, 300, 'boss', 2).setOrigin(0.5);
         this.boss.setScale(5);
         this.boss.setSize(52, 50, true);
-        this.boss.setBounce(0.5);
+        this.boss.setBounce(1.2);
+
+
         //create state machine for boss
         this.bossFSM = new StateMachine('idle', {
             idle: new BossIdleState(),
@@ -133,70 +106,13 @@ class Play extends Phaser.Scene{
             damaged: new BossDamagedState()
         }, [this, this.boss]);
 
+
+        //create collider for boss and ui
         this.physics.add.collider(this.boss, this.line);
 
-
-        //create overlap for hitbox and boss
-        this.physics.add.overlap(this.cartHitBox, this.boss, this.p1Character.handleAttackOverlap(this.boss), undefined, this);
-
-
-/*
-        //animation creation for character walk
-        this.anims.create({
-            key: 'walk-up',
-            frameRate: 8,
-            repeat: -1,
-            frames: this.anims.generateFrameNumbers('walk_up', {start: 0, end: 2})
+        this.physics.add.collider(this.boss, this.spikeWall, function(boss, spike){
+            boss.attacked = true;
         });
-        this.anims.create({
-            key: 'walk-down',
-            frameRate: 8,
-            repeat: -1,
-            frames: this.anims.generateFrameNumbers('walk_down', {start: 0, end: 2})
-        });
-        this.anims.create({
-            key: 'walk-right',
-            frameRate: 8,
-            repeat: -1,
-            frames: this.anims.generateFrameNumbers('walk_right', {start: 0, end: 2})
-        });
-        
-        this.anims.create({
-            key: 'walk-left',
-            frameRate: 8,
-            repeat: -1,
-            frames: this.anims.generateFrameNumbers('walk_left', {start: 0, end: 2})
-        });
-
-
-
-
-
-        //animation creation for character attack
-        this.anims.create({
-            key: 'attack-up',
-            frameRate: 8,
-            frames: this.anims.generateFrameNumbers('attack_up', {start: 0, end: 3})
-        });
-        this.anims.create({
-            key: 'attack-down',
-            frameRate: 8,
-            frames: this.anims.generateFrameNumbers('attack_down', {start: 0, end: 3})
-        });
-        this.anims.create({
-            key: 'attack-left',
-            frameRate: 8,
-            frames: this.anims.generateFrameNumbers('attack_left', {start: 0, end: 3})
-        });
-        this.anims.create({
-            key: 'attack-right',
-            frameRate: 8,
-            frames: this.anims.generateFrameNumbers('attack_right', {start: 0, end: 3})
-        });
-*/
-
-
-
 
         //animation creation for boss
         this.anims.create({
@@ -213,14 +129,20 @@ class Play extends Phaser.Scene{
         });
         this.anims.create({
             key: 'damaged',
-            frameRate: 1,
-            repeat: 1,
+            frameRate: 8,
             frames: this.anims.generateFrameNumbers('boss', {start: 2, end: 2})
         });
 
 
         this.physics.add.collider(this.p1Character, this.boss, function (character, boss){
             character.collided = true;
+            character.bossCollide = true;
+        });
+
+        this.physics.add.collider(this.cartHitBox, this.boss, function (obj, boss){
+            if(!boss.stateBlocker){
+                boss.attacked = true;
+            }
         });
 
         //sean add
@@ -232,8 +154,11 @@ class Play extends Phaser.Scene{
         this.characterFSM.step();
         this.bossFSM.step();
         this.p1Character.moveHitBox();
+        //create overlap for hitbox and boss
+        //this.physics.add.overlap(this.cartHitBox, this.boss, this.p1Character.handleAttackOverlap(this.boss), null, this);
+        
 
-        if (Phaser.Input.Keyboard.JustDown(keyENTER)) {
+        if(this.boss.bossHealth <= 0) {
             this.scene.start('goodEndingScene');
         }
 
